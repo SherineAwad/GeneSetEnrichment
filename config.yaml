@@ -1,0 +1,3 @@
+DGE: "stress_wildtype_dge.csv" 
+ORGANISM: HUMAN #MOUSE for mouse 
+OUTNAME: stress_wildtype 
