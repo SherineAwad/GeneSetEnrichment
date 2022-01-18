@@ -7,9 +7,11 @@ Snakemake Workflow for Gene Set Enrichment: Pathway and GO Analysis
 
 Author: Sherine Awad 
 
+The pipeline works on HUMAN and MOUSE genomes. 
 
 Change the config.yaml file appropriately according to your data. 
 Update parameters of Genrich in the config file. Also, change workdir where the reference genome,  etc.
+
 
 
 Then run: snakemake -jnumber_of_cores, for example for 5 cores use:
@@ -28,3 +30,12 @@ and to print the commands in a dry run use:
 For the sake reproducibility, use conda to pull same versions of tools. Snakemake and conda have to be installed in your system:
 
     snakemake --cores --use-conda
+
+
+## TO DO 
+
+1. Add more Genome for enrichment 
+2. Add more parameters for a genric pipeline 
+
+
+
