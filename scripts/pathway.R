@@ -16,12 +16,19 @@ library(data.table)
 args <- commandArgs(trailingOnly = TRUE)
 dge = args[1]
 ORGANISM  =args[2] 
-outname = args[3]
+compare_type = args[3]
+outname = args[4]
 outname 
  
-#GO
 res <- read.csv(file = dge, header = TRUE)
-summary(res) 
+outname = paste(outname, compare_type, sep ="-")
+out = paste(outname, "KEGG.csv", sep="-")
+outUP = paste(outname, "KEGG_UP.csv", sep ="-")
+outDOWN = paste(outname, "KEGG_DOWN.csv", sep ="-")
+
+foldchanges = res$logFC
+names(foldchanges) <- res$entrez
+summary(foldchanges)
 #---------------------------
 #KEGG Analysis 
 #---------------------------
@@ -34,15 +41,9 @@ data(sigmet.idx.hs)
 data(go.subs.hs)
 kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
 head(kegg.sets.hs,3)
-foldchanges = res$logFC
-names(foldchanges) = res$entrez
 #---------------------------------------------------Use Kegg and gage to get upregulated and downregulated pathways
-out = paste(outname, "KEGG.csv", sep="-")
-outUP = paste(outname, "KEGG_UP.csv", sep ="-")
-outDOWN = paste(outname, "KEGG_DOWN.csv", sep ="-")
-
 data(kegg.gs)
-keggres = gage(foldchanges, gsets =kegg.sets.hs, same.dir = TRUE, compare="paired",make.plot = TRUE)
+keggres = gage(foldchanges, gsets =kegg.sets.hs, same.dir = TRUE, compare=compare_type,make.plot = TRUE)
 lapply(keggres, head)
 write.csv(keggres,out)
 keggrespathwaysup = data.frame(id=rownames(keggres$greater), keggres$greater) %>%
@@ -69,31 +70,16 @@ plot_pathway = function(pid) pathview(gene.data=foldchanges,gene.idtype="ENTREZI
 tmpup = sapply(keggresidsup, function(pid) pathview(gene.data=foldchanges,gene.idtype="ENTREZID", pathway.id=pid, species="human"))
 tmpdn = sapply(keggresidsdn, function(pid) pathview(gene.data=foldchanges,gene.idtype="ENTREZID", pathway.id=pid, species="human"))
 } else if (ORGANISM == "MOUSE"){
-res$symbol <- mapIds(org.Mm.eg.db,
-                     keys=row.names(res),
-                     column="SYMBOL",
-                     keytype="ENSEMBL",
-                     multiVals="first")
-res$entrez <- mapIds(org.Mm.eg.db,
-                     keys=row.names(res),
-                     column="ENTREZID",
-                     keytype="ENSEMBL",
-                     multiVals="first")
-
 data(kegg.sets.mm)
 data(go.sets.mm)
 data(carta.mm)
 data(sigmet.idx.mm)
 data(go.subs.mm)
-
-
 kegg.sets.mm = kegg.sets.mm[sigmet.idx.mm]
 head(kegg.sets.mm,3)
-foldchanges = res$logFC
-names(foldchanges) = res$entrez
 #---------------------------------------------------Use Kegg and gage to get upregulated and downregulated pathways
 data(kegg.gs)
-keggres = gage(foldchanges, gsets =kegg.sets.mm, same.dir = TRUE, compare="paired",make.plot = TRUE)
+keggres = gage(foldchanges, gsets =kegg.sets.mm, same.dir = TRUE, compare=compare_type,make.plot = TRUE)
 lapply(keggres, head)
 write.csv(keggres,out)
 keggrespathwaysup = data.frame(id=rownames(keggres$greater), keggres$greater) %>%

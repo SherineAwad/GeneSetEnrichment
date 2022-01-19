@@ -1,3 +1,4 @@
 DGE: "stress_wildtype_dge.csv" 
 ORGANISM: HUMAN #MOUSE for mouse 
-OUTNAME: stress_wildtype 
+OUTNAME: stress_wildtype
+COMPARISON: unpaired # you can choose paired 
